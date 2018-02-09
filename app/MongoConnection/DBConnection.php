@@ -1,5 +1,6 @@
 <?php
 namespace App;
+use MongoDB;
 
 
 // require_once 'vendor/autoload.php';
@@ -8,7 +9,7 @@ class DBConnection
 {
 	 const HOST = 'localhost';
 	 const PORT = 27017;
-	 const DBNAME = 'learn';
+	 const DBNAME = 'MongoLaravel';
 	 private static $instance;
 	 public $connection;
 	 public $database;

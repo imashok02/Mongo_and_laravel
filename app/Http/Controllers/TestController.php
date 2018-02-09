@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User;
+use App\Test;
+use Hash;
 
 class TestController extends Controller
 {
@@ -35,11 +36,18 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
-        $values = ['name' => 'Ashok Tester', 'email' => 'ashok@pentoz.com'];
+        $test = new Test();
 
-        $query = $this->connection->insert($values);
+        $values = [
 
-        return $query;
+            'name' => $request->name,
+            'email' =>$request->email,
+            'password' => Hash::make($request->password)
+        ];
+
+        $query = $test->insert($values);
+
+        var_dump($query);
     }
 
     /**
