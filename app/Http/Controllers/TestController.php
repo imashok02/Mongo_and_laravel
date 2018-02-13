@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Test;
 use Hash;
+use App\User;
 
 class TestController extends Controller
 {
@@ -15,7 +16,11 @@ class TestController extends Controller
      */
     public function index()
     {
-        //
+        $testing = new User;
+
+        $test = $testing->all();
+        print_r( $test );
+        
     }
 
     /**
@@ -36,7 +41,7 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
-        $test = new Test();
+        $test = new User();
 
         $values = [
 
@@ -45,9 +50,9 @@ class TestController extends Controller
             'password' => Hash::make($request->password)
         ];
 
-        $query = $test->insert($values);
+        $result = $test->insert($values);
 
-        var_dump($query);
+        return $result;
     }
 
     /**
@@ -58,7 +63,9 @@ class TestController extends Controller
      */
     public function show($id)
     {
-        //
+        $test = new User;
+        $ok = $test->findOne($id);
+        return($ok);
     }
 
     /**
@@ -81,7 +88,18 @@ class TestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $test = new User();
+
+        $values = [
+
+            'name' => $request->name,
+            'email' =>$request->email,
+            'password' => Hash::make($request->password)
+        ];
+
+        $result = $test->updateOne($id,$values);
+
+        return $result;
     }
 
     /**
@@ -92,6 +110,9 @@ class TestController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $test = new User;
+        $ok = $test->deleteOne($id);
+        return($ok);
+        
     }
 }
