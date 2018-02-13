@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Test;
 use Hash;
 use App\User;
+use MongoDB;
+use App\Profile;
 
-class TestController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,11 +17,11 @@ class TestController extends Controller
      */
     public function index()
     {
-        $testing = new Test;
+        $userInstance = new User;
 
-        $test = $testing->all();
+        $user = $userInstance->all();
         
-       return $test;
+       return $user;
         
     }
 
@@ -42,7 +43,14 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
-        $test = new User();
+        $this->validate($request, [
+            'name' =>'required|min:3',
+            'email' => 'required',
+            'password' => 'required|min:6'
+        ]);
+
+
+        $user = new User();
 
         $values = [
 
@@ -51,7 +59,7 @@ class TestController extends Controller
             'password' => Hash::make($request->password)
         ];
 
-        $result = $test->insertId($values);
+        $result = $user->insertId($values);
 
         return $result;
     }
@@ -64,9 +72,9 @@ class TestController extends Controller
      */
     public function show($id)
     {
-        $test = new User;
-        $ok = $test->findOneId($id);
-        return($ok);
+        $userInstance = new User;
+        $user = $userInstance->findOneId($id);
+        return $user;
     }
 
     /**
@@ -89,16 +97,15 @@ class TestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $test = new User();
+        $userInstance = new User();
 
         $values = [
 
             'name' => $request->name,
-            'email' =>$request->email,
-            'password' => Hash::make($request->password)
+            'email' => $request->email
         ];
 
-        $result = $test->updateOneId($id,$values);
+        $result = $userInstance->updateOneId($id,$values);
 
         return $result;
     }
@@ -111,26 +118,43 @@ class TestController extends Controller
      */
     public function destroy($id)
     {
-        $test = new User;
-        $ok = $test->deleteOneId($id);
+        $userInstance = new User;
+        $ok = $userInstance->deleteOneId($id);
         return($ok);
         
     }
 
-    public function log() 
 
+    public function attach(Request $request, $id)
     {
-        $user = new User();
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        if($user->authenticate($email, $password) == true)
-        {
-           return "success";
-        }
-        else
-        {
-            return "failure";
-        }
+        $userInstance = new User;
+
+        $values = array(
+
+            
+            'comment' => $request->comment,
+            'posted_at' => date('Y-m-d h:i:s')
+        );
+
+        $ok = $userInstance->embedd($id,$values);
+    }
+    
+//refrence things
+
+    public function relate($id)
+    {
+        $r = new User();
+        $ok  = $r->findOneId($id);
+        $result = new Profile();
+
+        $final = $result->findOneId($ok->profile_id);
+
+       
+         $k = iterator_to_array($final);
+
+
+         return ($k);
+        
     }
 
 }

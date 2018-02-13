@@ -19,50 +19,66 @@ class ParentModel {
 
     }
 
-    private function _loadData($id)
-    {
-        // $id = new MongoDB\BSON\ObjectID($_SESSION['user_id']);
-        $this->_user = $this->collection->findOne(array('_id' => $id));
-    }
 
      public function all() 
     {
         $result = $this->collection->find();
 
         foreach ($result as $r) {
-           print_r ($r);
+          
+            return $r;
          
         }
+        
     }
 
 
-    public function insert($values) 
+    public function insertId($values) 
     {
         $result = $this->collection->insertOne($values);
 
-        return $result;
+        return $result->getInsertedId();
     }
 
-    public function findOne($id) 
+// its working
+    public function findOneId($id) 
     {
 
         $result = $this->collection->findOne(array('_id' => new  MongoDB\BSON\ObjectID($id)));
 
        return $result;
     }
+//end its working 
 
-    public function updateOne($id, $values)
+    public function updateOneId($id, $values)
     {
-        $result = $this->collection->updateOne(array('_id'=> new  MongoDB\BSON\ObjectID($id)),array('$set' => $values) );
+        $result = $this->collection->updateOne(array('_id' => new  MongoDB\BSON\ObjectID($id)),array('$set' => $values) );
 
-        return $result;
+        return $result->getInsertedId();
     }
 
-    public function deleteOne($id)
+    // its working
+
+    public function deleteOneId($id)
     {
         $result = $this->collection->deleteOne(array('_id' => new MongoDB\BSON\ObjectID($id)));
-        return $result;
+        return $result->getDeletedCount();
     }
+    //its working
+
+
+    public function embedd($id, $values) 
+    {
+        $embedd = $this->collection->findOne(array('_id' => new MongoDB\BSON\ObjectID($id)));
+        $values = $values;
+
+        $embeddeddoc = $this->collection->updateOne(array('_id' => new MongoDB\BSON\ObjectID($id)), array('$push' => array('comments' => $values)));
+
+        return true;
+
+    }
+
+
 
 }
 
