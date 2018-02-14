@@ -11,39 +11,42 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 
 
+// Route::post('/log', 'AuthenticationController@login');
 
-Route::post('/log', 'AuthenticationController@login');
+// // profile routes
 
-// profile routes
+// Route::get('/user', 'UserController@index');
 
-Route::get('/user', 'UserController@index');
+// Route::post('/user', 'UserController@store');
 
-Route::post('/user', 'UserController@store');
+// Route::get('/user/{id}', 'UserController@show');
 
-Route::get('/user/{id}', 'UserController@show');
+// Route::PUT('/user/{id}', 'UserController@update');
 
-Route::PUT('/user/{id}', 'UserController@update');
+// Route::DELETE('/user', 'UserController@delete');
 
-Route::DELETE('/user', 'UserController@delete');
-
-Route::post('/user/{id}/attach', 'UserController@attach');
-Route::get('/user/{id}/relate', 'UserController@relate');
+// Route::post('/user/{id}/attach', 'UserController@attach');
+// Route::get('/user/{id}/relate', 'UserController@relate');
 
 
-Route::get('/profile', 'ProfileController@index');
+// Route::get('/profile', 'ProfileController@index');
 
-Route::post('/profile', 'ProfileController@store');
+// Route::post('/profile', 'ProfileController@store');
 
-Route::get('/profile/{id}', 'ProfileController@show');
+// Route::get('/profile/{id}', 'ProfileController@show');
 
-Route::PUT('/profile/{id}', 'ProfileController@update');
+// Route::PUT('/profile/{id}', 'ProfileController@update');
 
-Route::DELETE('/profile', 'ProfileController@delete');
+// Route::DELETE('/profile', 'ProfileController@delete');
 
-Route::post('/profile/{id}/attach', 'ProfileController@attach');
+// Route::post('/profile/{id}/attach', 'ProfileController@attach');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

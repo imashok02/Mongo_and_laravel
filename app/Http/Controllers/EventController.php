@@ -4,29 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Hash;
+use App\Event;
 use App\User;
-use MongoDB;
-use App\Profile;
+use App\Location;
 
-class UserController extends Controller
+
+
+class EventController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-
-    public function __construct()
-    {
-      
-    }
+    
     public function index()
     {
-        $userInstance = new User;
+        $eventing = new Event;
 
-        $user = $userInstance->all();
+        $event = $eventing->all();
         
-       return $user;
+       return $event;
         
     }
 
@@ -37,7 +35,10 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $locate = new Location;
+
+        return $locate->all();
+
     }
 
     /**
@@ -48,23 +49,19 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' =>'required|min:3',
-            'email' => 'required',
-            'password' => 'required|min:6'
-        ]);
-
-
-        $user = new User();
+       $user = new User;
+        $event = new Event();
 
         $values = [
 
             'name' => $request->name,
-            'email' =>$request->email,
-            'password' => Hash::make($request->password)
+            'location_id' => $request->location_id,
+            'user_id' => $user->auth_user()->_id
         ];
 
-        $result = $user->insertId($values);
+        $result = $event->insertId($values);
+
+
 
         return $result;
     }
@@ -77,9 +74,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $userInstance = new User;
-        $user = $userInstance->findOneId($id);
-        return $user;
+        $event = new Event;
+
+        $ok = $event->findOneId($id);
+
+        return $ok;
     }
 
     /**
@@ -102,15 +101,15 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $userInstance = new User();
+        $event = new Event();
 
         $values = [
 
-            'name' => $request->name,
-            'email' => $request->email
+             'name' => $request->name,
+             'event_category_id' => $request->event_category_id
         ];
 
-        $result = $userInstance->updateOneId($id,$values);
+        $result = $event->updateOneId($id,$values);
 
         return $result;
     }
@@ -123,42 +122,9 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $userInstance = new User;
-        $ok = $userInstance->deleteOneId($id);
+        $event = new Event;
+        $ok = $event->deleteOneId($id);
         return($ok);
-        
-    }
-
-
-    public function attach(Request $request, $id)
-    {
-        $userInstance = new User;
-
-        $values = array(
-
-            
-            'comment' => $request->comment,
-            'posted_at' => date('Y-m-d h:i:s')
-        );
-
-        $ok = $userInstance->embedd($id,$values);
-    }
-    
-//refrence things
-
-    public function relate($id)
-    {
-        $r = new User();
-        $ok  = $r->findOneId($id);
-        $result = new Profile();
-
-        $final = $result->findOneId($ok->profile_id);
-
-       
-         $k = iterator_to_array($final);
-
-
-         return ($k);
         
     }
 

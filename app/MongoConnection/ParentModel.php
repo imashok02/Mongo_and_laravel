@@ -26,7 +26,7 @@ class ParentModel {
 
         foreach ($result as $r) {
           
-            return $r;
+            print_r( $r);
          
         }
         
@@ -48,13 +48,21 @@ class ParentModel {
 
        return $result;
     }
+
+     public function findOneApi($value) 
+    {
+
+        $result = $this->collection->findOne(array('api_key' => $value));
+
+       return $result;
+    }
 //end its working 
 
     public function updateOneId($id, $values)
     {
         $result = $this->collection->updateOne(array('_id' => new  MongoDB\BSON\ObjectID($id)),array('$set' => $values) );
 
-        return $result->getInsertedId();
+        return response()->json('Updated Successfully');
     }
 
     // its working

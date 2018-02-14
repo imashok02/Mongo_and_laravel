@@ -4,29 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Hash;
-use App\User;
-use MongoDB;
-use App\Profile;
+use App\Interest;
+use App\Interest_Category;
 
-class UserController extends Controller
+class InterestController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-
-    public function __construct()
-    {
-      
-    }
     public function index()
     {
-        $userInstance = new User;
+        $interest = new Interest;
 
-        $user = $userInstance->all();
+        $interest = $interest->all();
         
-       return $user;
+       return $interest;
         
     }
 
@@ -37,7 +31,10 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $interest_category = new Interest_Category;
+
+        return $interest_category->all();
+
     }
 
     /**
@@ -48,23 +45,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' =>'required|min:3',
-            'email' => 'required',
-            'password' => 'required|min:6'
-        ]);
+        
 
-
-        $user = new User();
+       
+        $interest = new Interest();
 
         $values = [
 
             'name' => $request->name,
-            'email' =>$request->email,
-            'password' => Hash::make($request->password)
+            'interest_category_id' => $request->interest_category_id
         ];
 
-        $result = $user->insertId($values);
+        $result = $interest->insertId($values);
+
+
 
         return $result;
     }
@@ -77,9 +71,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $userInstance = new User;
-        $user = $userInstance->findOneId($id);
-        return $user;
+        $interest = new Interest;
+
+        $ok = $interest->findOneId($id);
+
+        return $ok;
     }
 
     /**
@@ -102,15 +98,15 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $userInstance = new User();
+        $interest = new Interest();
 
         $values = [
 
-            'name' => $request->name,
-            'email' => $request->email
+             'name' => $request->name,
+             'interest_category_id' => $request->interest_category_id
         ];
 
-        $result = $userInstance->updateOneId($id,$values);
+        $result = $interest->updateOneId($id,$values);
 
         return $result;
     }
@@ -123,42 +119,9 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $userInstance = new User;
-        $ok = $userInstance->deleteOneId($id);
+        $interest = new Interest;
+        $ok = $interest->deleteOneId($id);
         return($ok);
-        
-    }
-
-
-    public function attach(Request $request, $id)
-    {
-        $userInstance = new User;
-
-        $values = array(
-
-            
-            'comment' => $request->comment,
-            'posted_at' => date('Y-m-d h:i:s')
-        );
-
-        $ok = $userInstance->embedd($id,$values);
-    }
-    
-//refrence things
-
-    public function relate($id)
-    {
-        $r = new User();
-        $ok  = $r->findOneId($id);
-        $result = new Profile();
-
-        $final = $result->findOneId($ok->profile_id);
-
-       
-         $k = iterator_to_array($final);
-
-
-         return ($k);
         
     }
 

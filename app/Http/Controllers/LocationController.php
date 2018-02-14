@@ -4,29 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Hash;
-use App\User;
-use MongoDB;
-use App\Profile;
+use App\Location;
 
-class UserController extends Controller
+class LocationController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-
-    public function __construct()
-    {
-      
-    }
     public function index()
     {
-        $userInstance = new User;
+        $location = new Location;
 
-        $user = $userInstance->all();
+        $locate = $location->all();
         
-       return $user;
+       return $locate;
         
     }
 
@@ -48,23 +41,14 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' =>'required|min:3',
-            'email' => 'required',
-            'password' => 'required|min:6'
-        ]);
-
-
-        $user = new User();
+        $locate = new Location();
 
         $values = [
 
-            'name' => $request->name,
-            'email' =>$request->email,
-            'password' => Hash::make($request->password)
+            'name' => $request->name
         ];
 
-        $result = $user->insertId($values);
+        $result = $locate->insertId($values);
 
         return $result;
     }
@@ -77,9 +61,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $userInstance = new User;
-        $user = $userInstance->findOneId($id);
-        return $user;
+        $locate = new Location;
+        $ok = $locate->findOneId($id);
+        return $ok;
     }
 
     /**
@@ -102,15 +86,14 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $userInstance = new User();
+        $locate = new Location();
 
         $values = [
 
-            'name' => $request->name,
-            'email' => $request->email
+             'name' => $request->name
         ];
 
-        $result = $userInstance->updateOneId($id,$values);
+        $result = $locate->updateOneId($id,$values);
 
         return $result;
     }
@@ -123,42 +106,9 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $userInstance = new User;
-        $ok = $userInstance->deleteOneId($id);
+        $locate = new Location;
+        $ok = $locate->deleteOneId($id);
         return($ok);
-        
-    }
-
-
-    public function attach(Request $request, $id)
-    {
-        $userInstance = new User;
-
-        $values = array(
-
-            
-            'comment' => $request->comment,
-            'posted_at' => date('Y-m-d h:i:s')
-        );
-
-        $ok = $userInstance->embedd($id,$values);
-    }
-    
-//refrence things
-
-    public function relate($id)
-    {
-        $r = new User();
-        $ok  = $r->findOneId($id);
-        $result = new Profile();
-
-        $final = $result->findOneId($ok->profile_id);
-
-       
-         $k = iterator_to_array($final);
-
-
-         return ($k);
         
     }
 
