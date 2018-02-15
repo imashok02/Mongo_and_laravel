@@ -4,27 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Hash;
-use App\Event;
+use App\Post;
 use App\User;
-use App\Location;
+use App\Comment;
+use MongoDB;
 
-
-
-class EventController extends Controller
+class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    
     public function index()
     {
-        $eventing = new Event;
 
-        $event = $eventing->all();
+        $commenting = new Comment;
+
+        $Comment = $commenting->all();
         
-       return $event;
+       return $Comment;
         
     }
 
@@ -35,10 +34,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        $locate = new Location;
-
-        return $locate->all();
-
+        //
     }
 
     /**
@@ -47,21 +43,19 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $post)
     {
-       $user = new User;
-        $event = new Event();
+        $user = new User;
+        $comment = new Comment;
 
         $values = [
 
-            'name' => $request->name,
-            'description' => $request->description,
+            'comment' => $request->comment,
+            'post_id' => new  MongoDB\BSON\ObjectID($post),
             'user_id' => $user->auth_user()->_id
         ];
 
-        $result = $event->insertId($values);
-
-
+        $result = $comment->insertId($values);
 
         return $result;
     }
@@ -72,12 +66,10 @@ class EventController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, $post)
     {
-        $event = new Event;
-
-        $ok = $event->findOneId($id);
-
+        $comment = new Comment;
+        $ok = $comment->findOneId($id);
         return $ok;
     }
 
@@ -99,19 +91,22 @@ class EventController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $post, $id )
     {
+
+    
         $user = new User;
-        $event = new Event();
+        $comment = new Comment();
+
+        $find_post = $comment->findOnePost(new  MongoDB\BSON\ObjectID($post));
 
         $values = [
-
-             'name' => $request->name,
-            'description' => $request->description,
+            
+            'comment' => $request->comment,
             'user_id' => $user->auth_user()->_id
         ];
 
-        $result = $event->updateOneId($id,$values);
+        $result = $comment->updateOneId($id,$values);
 
         return $result;
     }
@@ -124,26 +119,10 @@ class EventController extends Controller
      */
     public function destroy($id)
     {
-        $event = new Event;
-        $ok = $event->deleteOneId($id);
+        $comment = new Comment;
+        $ok = $comment->deleteOneId($id);
         return($ok);
         
     }
-
-    public function my_events()
-    {
-        $eventInstance = new Event;
-
-        $userInstance = new User;
-
-        $user_id = $userInstance->auth_user()->_id;
-
-        $events = $eventInstance->findforUser($user_id);
-
-        foreach ($events as $event) {
-            print_r($event);
-        }
-    }
-
 
 }

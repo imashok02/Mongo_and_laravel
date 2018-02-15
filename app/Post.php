@@ -10,12 +10,9 @@ use App\ParentModel;
 // require_once 'session.php';
 
 
-class Test extends ParentModel {
+class Post extends ParentModel {
 
-    protected $collection = "Testers";
+    protected $collection = "posts";
    
-
-
-
 
 }

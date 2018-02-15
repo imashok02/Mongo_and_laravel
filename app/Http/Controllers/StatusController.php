@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Test;
 use Hash;
+use App\Status;
 use App\User;
+use Storage;
 
-class TestController extends Controller
+class StatusController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,11 +17,11 @@ class TestController extends Controller
      */
     public function index()
     {
-        $testing = new Test;
+        $Statusing = new Status;
 
-        $test = $testing->all();
+        $Status = $Statusing->all();
         
-       return $test;
+       return $Status;
         
     }
 
@@ -42,16 +43,18 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
-        $test = new User();
+        $user = new User;
+        $Status = new Status();
+         
 
         $values = [
 
-            'name' => $request->name,
-            'email' =>$request->email,
-            'password' => Hash::make($request->password)
+            'status' => $request->status,
+            'user_id' => $user->auth_user()->_id,
+            
         ];
 
-        $result = $test->insertId($values);
+        $result = $Status->insertId($values);
 
         return $result;
     }
@@ -64,9 +67,9 @@ class TestController extends Controller
      */
     public function show($id)
     {
-        $test = new User;
-        $ok = $test->findOneId($id);
-        return($ok);
+        $Status = new Status;
+        $ok = $Status->findOneId($id);
+        return $ok;
     }
 
     /**
@@ -89,16 +92,18 @@ class TestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $test = new User();
+        $user = new User;
 
+        $status = new Status();
+
+        
         $values = [
-
-            'name' => $request->name,
-            'email' =>$request->email,
-            'password' => Hash::make($request->password)
+            
+            'status' => $request->status,
+            'user_id' => $user->auth_user()->_id
         ];
 
-        $result = $test->updateOneId($id,$values);
+        $result = $status->updateOneId($id,$values);
 
         return $result;
     }
@@ -111,25 +116,24 @@ class TestController extends Controller
      */
     public function destroy($id)
     {
-        $test = new User;
-        $ok = $test->deleteOneId($id);
+        $Status = new Status;
+        $ok = $Status->deleteOneId($id);
         return($ok);
         
     }
 
-    public function log() 
-
+    public function my_status()
     {
-        $user = new User();
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        if($user->authenticate($email, $password) == true)
-        {
-           return "success";
-        }
-        else
-        {
-            return "failure";
+        $statusInstance = new Status;
+
+        $userInstance = new User;
+
+        $user_id = $userInstance->auth_user()->_id;
+
+        $status = $statusInstance->findforUser($user_id);
+
+        foreach ($status as $stat) {
+            print_r($stat);
         }
     }
 

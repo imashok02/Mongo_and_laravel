@@ -24,7 +24,7 @@ class UserController extends Controller
     {
         $userInstance = new User;
 
-        $user = $userInstance->all();
+        $user = $userInstance->auth_user( );
         
        return $user;
         
@@ -46,28 +46,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $this->validate($request, [
-            'name' =>'required|min:3',
-            'email' => 'required',
-            'password' => 'required|min:6'
-        ]);
-
-
-        $user = new User();
-
-        $values = [
-
-            'name' => $request->name,
-            'email' =>$request->email,
-            'password' => Hash::make($request->password)
-        ];
-
-        $result = $user->insertId($values);
-
-        return $result;
-    }
+    
 
     /**
      * Display the specified resource.
@@ -77,9 +56,25 @@ class UserController extends Controller
      */
     public function show($id)
     {
+
         $userInstance = new User;
+
+        $profileInstance = new Profile;
+
+        
         $user = $userInstance->findOneId($id);
-        return $user;
+
+
+        if ($user->profile_id)
+        {
+           
+            return $user;
+        }
+
+         $profile = $profileInstance->findOneId($user->profile_id); 
+        return [$user, $profile];
+
+       
     }
 
     /**
@@ -130,36 +125,36 @@ class UserController extends Controller
     }
 
 
-    public function attach(Request $request, $id)
-    {
-        $userInstance = new User;
+//     public function attach(Request $request, $id)
+//     {
+//         $userInstance = new User;
 
-        $values = array(
+//         $values = array(
 
             
-            'comment' => $request->comment,
-            'posted_at' => date('Y-m-d h:i:s')
-        );
+//             'comment' => $request->comment,
+//             'posted_at' => date('Y-m-d h:i:s')
+//         );
 
-        $ok = $userInstance->embedd($id,$values);
-    }
+//         $ok = $userInstance->embedd($id,$values);
+//     }
     
-//refrence things
+// //refrence things
 
-    public function relate($id)
-    {
-        $r = new User();
-        $ok  = $r->findOneId($id);
-        $result = new Profile();
+//     public function relate($id)
+//     {
+//         $r = new User();
+//         $ok  = $r->findOneId($id);
+//         $result = new Profile();
 
-        $final = $result->findOneId($ok->profile_id);
+//         $final = $result->findOneId($ok->profile_id);
 
        
-         $k = iterator_to_array($final);
+//          $k = iterator_to_array($final);
 
 
-         return ($k);
+//          return ($k);
         
-    }
+//     }
 
 }

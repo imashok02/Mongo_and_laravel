@@ -12,21 +12,15 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('/signup', 'AuthenticationController@signup');
+Route::post('/log', 'AuthenticationController@login');
+Route::post('/out', 'AuthenticationController@logout');
 
 
 Route::middleware('apiaccess')->group(function () {
 
-	Route::get('/test', 'AuthenticationController@test');
-
-
-Route::post('/log', 'AuthenticationController@login');
-Route::post('/out', 'AuthenticationController@logout');
-
-// profile routes
-
+//for core user, only gives email, password, api_key, name and _id
 Route::get('/user', 'UserController@index');
-
-Route::post('/user', 'UserController@store');
 
 Route::get('/user/{id}', 'UserController@show');
 
@@ -34,13 +28,14 @@ Route::post('/user/{id}', 'UserController@update');
 
 Route::DELETE('/user', 'UserController@delete');
 
-Route::post('/user/{id}/attach', 'UserController@attach');
-Route::get('/user/{id}/relate', 'UserController@relate');
+//end User
 
+
+//for user profile index, update and delete
 
 Route::get('/profile', 'ProfileController@index');
 
-Route::post('/profile', 'ProfileController@store');
+// Route::post('/profile', 'ProfileController@store');
 
 Route::get('/profile/{id}', 'ProfileController@show');
 
@@ -50,7 +45,9 @@ Route::DELETE('/profile', 'ProfileController@delete');
 
 Route::post('/profile/{id}/attach', 'ProfileController@attach');
 
+//end profile
 
+//basic location Crud
 Route::get('/location', 'LocationController@index');
 
 Route::post('/location', 'LocationController@store');
@@ -61,9 +58,11 @@ Route::post('/location/{id}', 'LocationController@update');
 
 Route::DELETE('/location', 'LocationController@delete');
 
-Route::post('/location/{id}/attach', 'LocationController@attach');
+
+//end location Crud
 
 
+//interest categories crud
 Route::get('/interestcategories', 'InterestCategoryController@index');
 
 Route::post('/interestcategories', 'InterestCategoryController@store');
@@ -74,9 +73,9 @@ Route::post('/interestcategories/{id}', 'InterestCategoryController@update');
 
 Route::DELETE('/interestcategories', 'InterestCategoryController@delete');
 
-Route::post('/interestcategories/{id}/attach', 'InterestCategoryController@attach');
+//end interest categories crud
 
-
+//languages crud
 Route::get('/languages', 'LanguagesController@index');
 
 Route::post('/languages', 'LanguagesController@store');
@@ -89,7 +88,9 @@ Route::DELETE('/languages', 'LanguagesController@delete');
 
 Route::post('/languages/{id}/attach', 'LanguagesController@attach');
 
+//end languages crud
 
+//interest crud
 Route::get('/interest', 'InterestController@index');
 
 Route::get('/interest/create', 'InterestController@create');
@@ -103,8 +104,9 @@ Route::post('/interest/{id}', 'InterestController@update');
 Route::DELETE('/interest', 'InterestController@delete');
 
 Route::post('/interest/{id}/attach', 'InterestController@attach');
+//end interest crud
 
-
+//Events crud
 Route::get('/events', 'EventController@index');
 
 Route::get('/events/create', 'EventController@create');
@@ -118,9 +120,76 @@ Route::post('/events/{id}', 'EventController@update');
 Route::DELETE('/events', 'EventController@delete');
 
 Route::post('/events/{id}/attach', 'EventController@attach');
-    
+//end Events crud
+
+
+//posts crud
+
+Route::get('/posts', 'PostController@index');
+
+Route::get('/posts/create', 'PostController@create');
+
+Route::post('/posts', 'PostController@store');
+
+Route::get('/posts/{id}', 'PostController@show');
+
+Route::post('/posts/{id}', 'PostController@update');
+
+Route::DELETE('/posts', 'PostController@delete');
+
+Route::post('/posts/{id}/attach', 'PostController@attach');
+
+//end posts crud
+
+
+Route::get('/posts/{post}/comments', 'CommentController@index');
+
+Route::get('/posts/{post}/comment/create', 'CommentController@create');
+
+Route::post('/posts/{post}/comment', 'CommentController@store');
+
+Route::get('/posts/{post}/comment/{id}', 'CommentController@show');
+
+Route::post('/posts/{post}/comment/{id}', 'CommentController@update');
+
+Route::DELETE('/posts/{post}/comment/{id}', 'CommentController@delete');
+
+Route::post('/posts/{id}/attach', 'CommentController@attach');
+
+
+//status crud
+
+Route::get('/status', 'StatusController@index');
+
+Route::get('/status/create', 'StatusController@create');
+
+Route::post('/status', 'StatusController@store');
+
+Route::get('/status/{id}', 'StatusController@show');
+
+Route::post('/status/{id}', 'StatusController@update');
+
+Route::DELETE('/status', 'StatusController@delete');
+
+Route::post('/status/{id}/attach', 'StatusController@attach');
+
+//end status crud
+
+
+Route::get('/myevents', 'EventController@my_events');
+
+Route::get('/myposts', 'PostController@my_posts');
+
+Route::get('/mystatus', 'StatusController@my_status');
+
+
+
+
 });
 
+
+
+    
 
 
 

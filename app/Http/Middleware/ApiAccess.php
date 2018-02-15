@@ -16,6 +16,11 @@ class ApiAccess
      */
     public function handle($request, Closure $next)
     {  
+        if(empty($_REQUEST['api_key'] ))
+        {
+            return response()->json('Sorry, Cannot Let you In');
+        }
+
         $user = new User;
         $findUser = $user->findOneApi($_REQUEST['api_key']);
 

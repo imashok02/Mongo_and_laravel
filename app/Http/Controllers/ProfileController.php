@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Hash;
 use App\User;
 use App\Profile;
+use MongoDB;
 
 class ProfileController extends Controller
 {
@@ -16,9 +17,9 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $userInstance = new Profile;
+        $userInstance = new User;
 
-        $user = $userInstance->all();
+        $user = $userInstance->auth_user();
         
        return $user;
         
@@ -40,54 +41,54 @@ class ProfileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $this->validate($request, [
+    // public function store(Request $request)
+    // {
+    //     $this->validate($request, [
             
-        ]);
+    //     ]);
 
 
-       $userInstance = new User();
+    //    $userInstance = new User();
 
-        $profileInstance = new Profile();
+    //     $profileInstance = new Profile();
 
-        $values = [
+    //     $values = [
 
-            'mobile' => $request->mobile,
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'gender' => $request->gender,
-            'location '=> $request->location,
-            'languages' => $request->languages,
-            'post_id' => $request->post_id,
-            'fb_page' => $request->fb_page,
-            'twitter_page' => $request->twitter_page,
-            'insta_page' => $request->insta_page,
-            'youtube_page' => $request->youtube_page
+    //         'mobile' => $request->mobile,
+    //         'first_name' => $request->first_name,
+    //         'last_name' => $request->last_name,
+    //         'email' => $request->email,
+    //         'gender' => $request->gender,
+    //         'location '=> $request->location,
+    //         'languages' => $request->languages,
+    //         'post_id' => $request->post_id,
+    //         'fb_page' => $request->fb_page,
+    //         'twitter_page' => $request->twitter_page,
+    //         'insta_page' => $request->insta_page,
+    //         'youtube_page' => $request->youtube_page
 
-        ];
+    //     ];
 
-        $profile_save = $profileInstance->insertId($values);
-
-        
-
-
-
-        $values2 = [
-
-            'name' => 'Ashok',
-            'profile_id' => $profile_save
-
-
-        ];
-
-        $user = $userInstance->insertId($values2);
+    //     $profile_save = $profileInstance->insertId($values);
 
         
 
-        return $user;
-    }
+
+
+    //     $values2 = [
+
+    //         'name' => 'Ashok',
+    //         'profile_id' => $profile_save
+
+
+    //     ];
+
+    //     $user = $userInstance->insertId($values2);
+
+        
+
+    //     return $user;
+    // }
 
     /**
      * Display the specified resource.
@@ -97,9 +98,18 @@ class ProfileController extends Controller
      */
     public function show($id)
     {
-        $userInstance = new Profile;
-        $user = $userInstance->findOneId($id);
-        return $user;
+    
+        $userInstance = new User;
+
+        $profileInstance = new Profile;
+
+        
+        $profile = $profileInstance->findOneId(new  MongoDB\BSON\ObjectID($id));
+        
+
+         $user = $userInstance->findOneId($profile->user_id);
+
+        return response()->json([$user, $profile]);
     }
 
     /**
@@ -131,7 +141,7 @@ class ProfileController extends Controller
             'mobile' => $request->mobile,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'email' => $request->email,
+            // 'email' => $request->email,
             'gender' => $request->gender,
             //pro_tag_line => $request->pro_tag_line,
             'location '=> $request->location,
@@ -144,19 +154,7 @@ class ProfileController extends Controller
 
         ];
 
-        $profile_save = $profileInstance->insertOneId($values);
-
-        $values2 = [
-
-            'name' => 'Ashok',
-            'profile' => $values['_id']
-
-
-        ];
-
-        $user = $userInstance->insert($values2);
-
-        $result = $userInstance->updateOneId($id,$values);
+        $result = $profileInstance->updateOneId($id,$values);
 
         return $result;
     }

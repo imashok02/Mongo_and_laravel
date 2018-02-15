@@ -56,6 +56,29 @@ class ParentModel {
 
        return $result;
     }
+
+    public function findOnePost($value) 
+    {
+
+        $result = $this->collection->findOne(array('post_id' =>($value)));
+
+       return $result;
+    }
+
+    public function findOneProfile($value) 
+    {
+
+        $result = $this->collection->findOne(array('profile_id' =>($value)));
+
+       return $result;
+    }
+
+    public function findforUser($user_id)
+    {
+        $result = $this->collection->find(array('user_id' =>($user_id)));
+
+       return $result;
+    }
 //end its working 
 
     public function updateOneId($id, $values)
