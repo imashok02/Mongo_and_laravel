@@ -27,10 +27,12 @@ class User extends ParentModel {
 		);
 
 
-		$user = $this->collection->findOne($query);
+		$user = $this->collection->findOne(array('email' => $email ));
 
-		
-		if(empty($user))
+		$user_password = Hash::check($password, $user->password);
+    
+		if(!$user_password)
+
 			return response()->json(['status' => 'failed to log in','email' => $email]);
 		// $_SESSION['user_id'] = (string) $this->_user['_id'];
 		else

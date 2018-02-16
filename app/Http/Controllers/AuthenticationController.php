@@ -52,7 +52,7 @@ class AuthenticationController extends Controller
     {
         $user = new User();
         $email = $request->email;
-        $password = Hash::make($request->password);
+        $password = $request->password;
         $log = $user->authenticating($email, $password);
         return $log;
     }
